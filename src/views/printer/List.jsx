@@ -1,7 +1,7 @@
 import { Lucide } from "@/base-components";
 import { useQuery } from "@apollo/client";
 import { useState } from "react";
-import { LIST_CATEGORY_QUERY } from "../../graphql/category";
+import { LIST_PRINTER_QUERY } from "../../graphql/printer";
 import CreateModal from "./CreateModal";
 import DeleteModal from "./DeleteModal";
 import UpdateModal from "./UpdateModal";
@@ -11,15 +11,24 @@ function Main() {
   const [modalEdit, setmodalEdit] = useState(false);
   const [modalDelete, setModalDelete] = useState(false);
   const [selectedPrinter, setselectedPrinter] = useState();
-  const { loading, data } = useQuery(LIST_CATEGORY_QUERY);
+  const { loading, data } = useQuery(LIST_PRINTER_QUERY,{
+    variables:{
+      filter: {
+        filter:"",
+        take:10,
+        skip:0,
+        cursor:0
+      }
+    }
+  });
 
-  const handleEdit = (category) => {
-    setselectedPrinter(category);
+  const handleEdit = (printer) => {
+    setselectedPrinter(printer);
     setmodalEdit(true);
   };
 
-  const handleDelete = (category) => {
-    setselectedPrinter(category);
+  const handleDelete = (printer) => {
+    setselectedPrinter(printer);
     setModalDelete(true);
   };
   return (
@@ -66,7 +75,7 @@ function Main() {
                 </div>
               )}
               {data
-                ? data.categories.map((printer, key) => (
+                ? data.printers.map((printer, key) => (
                     <tr key={key} className="intro-x">
                       <td>
                         <a href="" className="font-medium whitespace-nowrap">
@@ -75,12 +84,12 @@ function Main() {
                       </td>
                       <td>
                         <a href="" className="font-medium whitespace-nowrap">
-                          {printer.name}
+                          {printer.description}
                         </a>
                       </td>
                       <td>
                         <a href="" className="font-medium whitespace-nowrap">
-                          {printer.name}
+                          {printer.ipAddress}
                         </a>
                       </td>
 
@@ -117,7 +126,7 @@ function Main() {
         {/* END: Data List */}
         {/* BEGIN: Pagination */}
         {
-          data && data.categories.length > 10?
+          data && data.printers.length > 10?
           <div className="intro-y col-span-12 flex flex-wrap sm:flex-row sm:flex-nowrap items-center">
             <nav className="w-full sm:w-auto sm:mr-auto">
               <ul className="pagination">
@@ -181,12 +190,12 @@ function Main() {
         <UpdateModal
           modal={modalEdit}
           setModal={setmodalEdit}
-          category={selectedPrinter}
+          printer={selectedPrinter}
         />
         <DeleteModal
           modal={modalDelete}
           setModal={setModalDelete}
-          category={selectedPrinter}
+          printer={selectedPrinter}
         />
       </div>
     </>

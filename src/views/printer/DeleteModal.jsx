@@ -1,20 +1,20 @@
 import { Lucide, Modal, ModalBody } from "@/base-components";
 import { useMutation } from "@apollo/client";
-import { DELETE_CATEGORY_MUTATION } from "../../graphql/category";
+import { DELETE_PRINTER_MUTATION } from "../../graphql/printer";
 
-function DeleteModal({ modal, setModal, category }) {
-  const [deleteCategory, { data, loading }] = useMutation(DELETE_CATEGORY_MUTATION);
+function DeleteModal({ modal, setModal, printer }) {
+  const [deletePrinter, { data, loading }] = useMutation(DELETE_PRINTER_MUTATION);
   const handleDelete = () => {
-    deleteCategory({
+    deletePrinter({
       variables: {
        input:{
-        id:category.id
+        id:printer.id
        }
       },
       onCompleted: () => {
         setModal(false);
       },
-      refetchQueries: () => ['categories']
+      refetchQueries: () => ['printers']
     });
   };
   return (
@@ -33,8 +33,8 @@ function DeleteModal({ modal, setModal, category }) {
             />
             <div className="text-3xl mt-5">Are you sure?</div>
             <div className="text-slate-500 mt-2">
-              Do you really want to delete this category? <br />
-              <strong className="capitalize">{category ? category.name : ''}</strong>
+              Do you really want to delete this printer? <br />
+              <strong className="capitalize">{printer ? printer.name : ''}</strong>
             </div>
           </div>
           <div className="px-5 pb-8 text-center">

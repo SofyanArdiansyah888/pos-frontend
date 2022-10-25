@@ -4,15 +4,17 @@ import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import classnames from "classnames";
 import { useMutation } from "@apollo/client";
-import { CREATE_CATEGORY_MUTATION } from "../../graphql/category";
+import { CREATE_PRINTER_MUTATION } from "../../graphql/printer";
 
 function CreateModal({ modal, setModal }) {
   const [createCategory, { data, loading, error }] =
-    useMutation(CREATE_CATEGORY_MUTATION);
+    useMutation(CREATE_PRINTER_MUTATION);
   // VALIDATION
   const schema = yup
     .object({
       name: yup.string().required(),
+      description: yup.string().required(),
+      ipAddress: yup.string().required(),
     })
     .required();
 
@@ -41,7 +43,7 @@ function CreateModal({ modal, setModal }) {
           }));
           setModal(false)
         },
-        refetchQueries: () => ["categories"],
+        refetchQueries: () => ["printers"],
       });
     }
   };
@@ -55,12 +57,12 @@ function CreateModal({ modal, setModal }) {
       >
         <form className="validate-form" onSubmit={handleSubmit(handleCreate)}>
           <ModalHeader>
-            <h2 className="font-medium text-base mr-auto">Buat Kategori</h2>
+            <h2 className="font-medium text-base mr-auto">Buat Printer</h2>
           </ModalHeader>
           <ModalBody className="grid grid-cols-12 gap-4 gap-y-3">
             <div className="col-span-12">
               <label htmlFor="name" className="form-label">
-                Nama Kategori
+                Nama Printer
               </label>
               <input
                 {...register("name")}
@@ -74,6 +76,44 @@ function CreateModal({ modal, setModal }) {
               />
               {errors.name && (
                 <div className="text-danger mt-2">{errors.name.message}</div>
+              )}
+            </div>
+
+            <div className="col-span-12">
+              <label htmlFor="description" className="form-label">
+                Deskripsi
+              </label>
+              <input
+                {...register("description")}
+                className={classnames({
+                  "form-control": true,
+                  "border-danger": errors.description,
+                })}
+                name="description"
+                id="description"
+                type="text"
+              />
+              {errors.description && (
+                <div className="text-danger mt-2">{errors.description.message}</div>
+              )}
+            </div>
+
+            <div className="col-span-12">
+              <label htmlFor="ipAddress" className="form-label">
+                Ip Address
+              </label>
+              <input
+                {...register("ipAddress")}
+                className={classnames({
+                  "form-control": true,
+                  "border-danger": errors.ipAddress,
+                })}
+                name="ipAddress"
+                id="ipAddress"
+                type="text"
+              />
+              {errors.ipAddress && (
+                <div className="text-danger mt-2">{errors.ipAddress.message}</div>
               )}
             </div>
           </ModalBody>
