@@ -1,15 +1,45 @@
 import {
-  Lucide,
   Dropdown,
-  DropdownToggle,
-  DropdownMenu,
   DropdownContent,
   DropdownItem,
+  DropdownMenu,
+  DropdownToggle,
+  Lucide,
 } from "@/base-components";
 import { faker as $f } from "@/utils";
-import * as $_ from "lodash";
+import { useQuery } from "@apollo/client";
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { LIST_TABLE_QUERY } from "../../graphql/table";
+import CreateModal from "./CreateModal";
+import DeleteModal from "./DeleteModal";
+import UpdateModal from "./UpdateModal";
 
 function Main() {
+  const [modal, setModal] = useState(false);
+  const [modalEdit, setmodalEdit] = useState(false);
+  const [modalDelete, setModalDelete] = useState(false);
+  const [selectedTable, setSelectedTable] = useState();
+  const { loading, data } = useQuery(LIST_TABLE_QUERY, {
+    variables: {
+      filter: {
+        filter: "",
+        take: 10,
+        skip: 0,
+        cursor: 0,
+      },
+    },
+  });
+
+  const handleEdit = (table) => {
+    setSelectedTable(table);
+    setmodalEdit(true);
+  };
+
+  const handleDelete = (table) => {
+    setSelectedTable(table);
+    setModalDelete(true);
+  };
   return (
     <>
       <div className="grid grid-cols-12 gap-6 mt-8">
@@ -17,10 +47,9 @@ function Main() {
           <h2 className="intro-y text-lg font-medium mr-auto mt-2">
             List Meja
           </h2>
-     
         </div>
-        <div className="col-span-12 lg:col-span-12 2xl:col-span-10">
-          {/* BEGIN: File Manager Filter */}
+        <div className="col-span-12 lg:col-span-12 ">
+          {/* SEARCH */}
           <div className="intro-y flex flex-col-reverse sm:flex-row items-center">
             <div className="w-full sm:w-auto relative mr-auto mt-3 sm:mt-0">
               <Lucide
@@ -30,150 +59,77 @@ function Main() {
               <input
                 type="text"
                 className="form-control w-full sm:w-64 box px-10"
-                placeholder="Search files"
+                placeholder="Search..."
               />
-              <Dropdown
-                className="inbox-filter absolute inset-y-0 mr-3 right-0 flex items-center"
-                placement="bottom-start"
-              >
-                <DropdownToggle
-                  tag="a"
-                  role="button"
-                  className="w-4 h-4 block"
-                  href="#"
-                >
-                  <Lucide
-                    icon="ChevronDown"
-                    className="w-4 h-4 cursor-pointer text-slate-500"
-                  />
-                </DropdownToggle>
-                <DropdownMenu className="inbox-filter__dropdown-menu pt-2">
-                  <DropdownContent tag="div">
-                    <div className="grid grid-cols-12 gap-4 gap-y-3 p-3">
-                      <div className="col-span-6">
-                        <label
-                          htmlFor="input-filter-1"
-                          className="form-label text-xs"
-                        >
-                          File Name
-                        </label>
-                        <input
-                          id="input-filter-1"
-                          type="text"
-                          className="form-control flex-1"
-                          placeholder="Type the file name"
-                        />
-                      </div>
-                      <div className="col-span-6">
-                        <label
-                          htmlFor="input-filter-2"
-                          className="form-label text-xs"
-                        >
-                          Shared With
-                        </label>
-                        <input
-                          id="input-filter-2"
-                          type="text"
-                          className="form-control flex-1"
-                          placeholder="example@gmail.com"
-                        />
-                      </div>
-                      <div className="col-span-6">
-                        <label
-                          htmlFor="input-filter-3"
-                          className="form-label text-xs"
-                        >
-                          Created At
-                        </label>
-                        <input
-                          id="input-filter-3"
-                          type="text"
-                          className="form-control flex-1"
-                          placeholder="Important Meeting"
-                        />
-                      </div>
-                      <div className="col-span-6">
-                        <label
-                          htmlFor="input-filter-4"
-                          className="form-label text-xs"
-                        >
-                          Size
-                        </label>
-                        <select
-                          id="input-filter-4"
-                          className="form-select flex-1"
-                        >
-                          <option>10</option>
-                          <option>25</option>
-                          <option>35</option>
-                          <option>50</option>
-                        </select>
-                      </div>
-                      <div className="col-span-12 flex items-center mt-3">
-                        <button className="btn btn-secondary w-32 ml-auto">
-                          Create Filter
-                        </button>
-                        <button className="btn btn-primary w-32 ml-2">
-                          Search
-                        </button>
-                      </div>
-                    </div>
-                  </DropdownContent>
-                </DropdownMenu>
-              </Dropdown>
             </div>
             <div className="w-full sm:w-auto flex">
-              <button className="btn btn-primary shadow-md mr-2">
+              <button
+                className="btn btn-primary shadow-md mr-2"
+                onClick={() => setModal(true)}
+              >
                 Tambah Meja
               </button>
-            
             </div>
           </div>
-          {/* END: File Manager Filter */}
-          {/* BEGIN: Directory & Files */}
+       
+          {/* LIST MEJA  */}
           <div className="intro-y grid grid-cols-12 gap-3 sm:gap-6 mt-5">
-            {$f().map((faker, fakerKey) => (
-              <div
-                key={fakerKey}
-                className="intro-y col-span-6 sm:col-span-4 md:col-span-3 2xl:col-span-2"
-              >
-                <div className="file box rounded-md px-5 pt-8 pb-5 px-3 sm:px-5 relative zoom-in">
-                  {/* <div className="absolute left-0 top-0 mt-3 ml-3">
-                    <input
-                      className="form-check-input border border-slate-500"
-                      type="checkbox"
-                      checked={faker.trueFalse[0]}
-                      onChange={() => {}}
-                    />
-                  </div> */}
-                  {(() => {
+            {data &&
+              data.tables.map((table, index) => (
+                <div
+                  key={index}
+                  className="intro-y col-span-6 sm:col-span-4 md:col-span-3 2xl:col-span-3"
+                >
+                  <div className="file box rounded-md px-5 pt-8 pb-5  relative zoom-in">
+                    {(() => {
                       return (
-                        <a
-                          href=""
-                          className="w-1/4 file__icon file__icon--image mx-auto"
-                        >
-                          <div className="file__icon--image__preview image-fit">
-                            <img
-                              alt="Gambar Meja"
-                              src="../src/assets/images/table.png"
-                            />
-                          </div>
-                        </a>
+                        <Link to={`/meja/${table.id}/pos`}>
+                          <a className="w-1/4 file__icon file__icon--image mx-auto">
+                            <div className="file__icon--image__preview image-fit">
+                              <img
+                                alt="Gambar Meja"
+                                src="../src/assets/images/table.png"
+                              />
+                            </div>
+                          </a>
+                        </Link>
                       );
-                  })()}
-                  <a
-                    href=""
-                    className="block font-medium mt-4 text-center truncate"
-                  >
-                    Meja
-                  </a>
-                  <div className="w-full mt-2 text-center ">
-                    <div className="w-12 text-md text-center m-auto bg-success text-stone-50  rounded-full">
-                      {/* {faker.files[0].size} */}
-                      Open
+                    })()}
+                    <a
+                      href=""
+                      className="block font-medium mt-4 text-center truncate"
+                    >
+                      {table.name}
+                    </a>
+                    <div className="w-full mt-2 ">
+                      {table.status === "OPEN" && (
+                        <div className="w-24 text-xs text-center m-auto bg-success text-stone-50 p-2 rounded-md">
+                          {table.status}
+                        </div>
+                      )}
+
+                      {table.status === "CLOSED" && (
+                        <div className="w-24 text-xs text-center m-auto bg-red-600 text-stone-50 p-2 rounded-md">
+                          {table.status}
+                        </div>
+                      )}
+
+                      {table.status === "ORDERED" && (
+                        <div className="w-24 text-xs text-center m-auto bg-blue-600 text-stone-50 p-2 rounded-md">
+                          {table.status}
+                        </div>
+                      )}
+
+                      {table.status === "RESERVED" && (
+                        <div className="w-24 text-xs text-center m-auto bg-slate-600 text-stone-50 p-2 rounded-md">
+                          {table.status}
+                        </div>
+                      )}
+                    </div>
+                    <div className="absolute top-0 left-0 ml-2 mt-3 ml-aut text-xs font-semibold">
+                      {!table.order && "0 Jam 0 Menit"}
                     </div>
                   </div>
-                  <div className="absolute top-0 left-0 ml-2 mt-3 ml-aut text-xs font-semibold">3 Jam 15 Menit</div>
                   <Dropdown className="absolute top-0 right-0 mr-2 mt-3 ml-auto">
                     <DropdownToggle tag="a" className="w-5 h-5 block" href="#">
                       <Lucide
@@ -184,22 +140,36 @@ function Main() {
                     <DropdownMenu className="w-40">
                       <DropdownContent>
                         <DropdownItem>
-                          <Lucide icon="Users" className="w-4 h-4 mr-2" /> 
-                          Booking
+                          <Lucide icon="Users" className="w-4 h-4 mr-2" />
+                          Reservasi
                         </DropdownItem>
-                        <DropdownItem>
+                        <DropdownItem onClick={() => handleEdit(table)}>
+                          <Lucide icon="Edit" className="w-4 h-4 mr-2" />
+                          Edit
+                        </DropdownItem>
+                        <DropdownItem onClick={() => handleDelete(table)} >
                           <Lucide icon="Trash" className="w-4 h-4 mr-2" />{" "}
-                          Delete
+                          Hapus
                         </DropdownItem>
                       </DropdownContent>
                     </DropdownMenu>
                   </Dropdown>
                 </div>
-              </div>
-            ))}
+              ))}
           </div>
-          {/* END: Directory & Files */}
-        =
+    
+
+          <CreateModal modal={modal} setModal={setModal} />
+          <UpdateModal
+            modal={modalEdit}
+            setModal={setmodalEdit}
+            table={selectedTable}
+          />
+          <DeleteModal
+            modal={modalDelete}
+            setModal={setModalDelete}
+            table={selectedTable}
+          />
         </div>
       </div>
     </>

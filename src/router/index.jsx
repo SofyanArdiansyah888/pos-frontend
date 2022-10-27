@@ -7,12 +7,12 @@ import ErrorPage from "../views/errors/Main";
 import PointOfSale from "../views/pos/Main";
 
 // PRODUCT
-import CreateProduk from "../views/produk/produk/Create";
-import ListProduk from "../views/produk/produk/List";
-import ListKategori from "../views/produk/kategori/List";
+import RingkasanPenjualan from "../views/laporan/RingkasanPenjualan";
 import ListBahanBaku from "../views/produk/bahan-baku/List";
 import ListBahanPendukung from "../views/produk/bahan-pendukung/List";
-import RingkasanPenjualan from "../views/laporan/RingkasanPenjualan";
+import ListKategori from "../views/produk/kategori/List";
+import CreateProduk from "../views/produk/produk/Create";
+import ListProduk from "../views/produk/produk/List";
 
 // USER
 import UserList from "../views/user/List";
@@ -22,21 +22,20 @@ import UserList from "../views/user/List";
 // import Pajak from "../views/laporan/Pajak";
 // import Pegawai from "../views/laporan/Pegawai";
 // import Pelanggan from "../views/laporan/Pelanggan";
-import PenjualanPerKategori from "../views/laporan/RingkasanPenjualan";
 import PenjualanPerProduk from "../views/laporan/PenjualanPerProduk";
+import PenjualanPerKategori from "../views/laporan/RingkasanPenjualan";
 
 import RiwayatTransaksi from "../views/riwayat-transaksi/RiwayatTransaksi";
 
 // INVENTARIS
-import StokOpname from "../views/inventaris/stok-opname/List";
-import CreateStokOpname from "../views/inventaris/stok-opname/Create";
 import DaftarStok from "../views/inventaris/daftar-stok/List";
-import StokMasuk from "../views/inventaris/stok-masuk/List";
 import CreateStokMasuk from "../views/inventaris/stok-masuk/Create";
+import StokMasuk from "../views/inventaris/stok-masuk/List";
+import CreateStokOpname from "../views/inventaris/stok-opname/Create";
+import StokOpname from "../views/inventaris/stok-opname/List";
 
 // MEJA
 import ListMeja from "../views/meja/List";
-import CreateMeja from "../views/meja/Create";
 
 // Pelanggan
 import CustomerList from "../views/pelanggan/List";
@@ -66,10 +65,10 @@ function Router() {
           element: <UserList />,
         },
         // POINT OF SALES
-        {
-          path: "pos",
-          element: <PointOfSale />,
-        },
+        // {
+        //   path: "pos",
+        //   element: <PointOfSale />,
+        // },
         // LAPORAN
         {
           path: "laporan/ringkasan-penjualan",
@@ -156,8 +155,8 @@ function Router() {
           element: <ListMeja />,
         },
         {
-          path: "/meja/create",
-          element: <CreateMeja />,
+          path: "/meja/:id/pos",
+          element: <PointOfSale />,
         },
         // PELANGGAN
         {

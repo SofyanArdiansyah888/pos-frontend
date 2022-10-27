@@ -63,11 +63,11 @@ const sideMenu = atom({
           ],
         },
       // POINT OF SALE
-      {
-        icon: "CreditCard",
-        pathname: "/pos",
-        title: "Point of Sale",
-      },
+      // {
+      //   icon: "CreditCard",
+      //   pathname: "/pos",
+      //   title: "Point of Sale",
+      // },
       // REPORT
       {
         icon: "Clipboard",
