@@ -25,7 +25,7 @@ function Main() {
         <div className="intro-y col-span-12 flex flex-wrap sm:flex-nowrap justify-between mt-2">
           <Link to="/produk/produk/create">
           <button className="btn btn-primary shadow-md mr-2">
-            Add New Product
+            Tambah Produk Baru
           </button>
           </Link>
           

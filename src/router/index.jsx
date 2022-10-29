@@ -11,7 +11,7 @@ import RingkasanPenjualan from "../views/laporan/RingkasanPenjualan";
 import ListBahanBaku from "../views/produk/bahan-baku/List";
 import ListBahanPendukung from "../views/produk/bahan-pendukung/List";
 import ListKategori from "../views/produk/kategori/List";
-import CreateProduk from "../views/produk/produk/Create";
+import CreateProduk from "../views/produk/produk/Create/Index";
 import ListProduk from "../views/produk/produk/List";
 
 // USER

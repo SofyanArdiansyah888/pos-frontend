@@ -7,16 +7,15 @@ import { useMutation } from "@apollo/client";
 import { CREATE_TABLE_MUTATION } from "../../graphql/table";
 
 function CreateModal({ modal, setModal }) {
-  const [createTable, { data, loading, error }] =
-    useMutation(CREATE_TABLE_MUTATION);
+  const [createTable, { data, loading, error }] = useMutation(
+    CREATE_TABLE_MUTATION
+  );
   // VALIDATION
   const schema = yup
     .object({
       name: yup.string().required(),
     })
     .required();
-
- 
 
   const {
     register,
@@ -26,7 +25,7 @@ function CreateModal({ modal, setModal }) {
     reset,
   } = useForm({
     mode: "onChange",
-    resolver: yupResolver(schema)
+    resolver: yupResolver(schema),
   });
 
   const handleCreate = async (data) => {
@@ -39,7 +38,7 @@ function CreateModal({ modal, setModal }) {
           reset(() => ({
             name: "",
           }));
-          setModal(false)
+          setModal(false);
         },
         refetchQueries: () => ["tables"],
       });
